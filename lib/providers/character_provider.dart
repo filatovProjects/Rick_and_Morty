@@ -15,15 +15,27 @@ class CharacterProvider extends ChangeNotifier {
   Set<int> get favorites => _favorites;
 
   bool isLoading = false;
+  bool hasMore = true;
   int _page = 1;
 
   Future<void> loadCharacters() async {
+    if (isLoading || !hasMore) return;
+
     isLoading = true;
     notifyListeners();
 
-    final newCharacters = await _apiService.fetchCharacters(page: _page);
-    _characters.addAll(newCharacters);
-    _page++;
+    try {
+      final newCharacters = await _apiService.fetchCharacters(page: _page);
+
+      if (newCharacters.isEmpty) {
+        hasMore = false;
+      } else {
+        _characters.addAll(newCharacters);
+        _page++;
+      }
+    } catch (_) {
+      hasMore = false;
+    }
 
     isLoading = false;
     notifyListeners();
