@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty/screens/characters_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../screens/characters_screen.dart';
+import '../providers/character_provider.dart';
+
 
 
 void main() {
@@ -11,9 +15,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rick and Morty',
-      home: const CharactersScreen(),
+    return ChangeNotifierProvider(
+      create: (_) => CharacterProvider(),
+      child: MaterialApp(
+        title: 'Rick and Morty',
+        home: const CharactersScreen(),
+      ),
     );
   }
 }
