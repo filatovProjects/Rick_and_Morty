@@ -4,7 +4,6 @@ import '../models/character_model.dart';
 import '../services/characters_service.dart';
 
 
-
 class CharacterProvider extends ChangeNotifier {
   final CharacterApiService _apiService = CharacterApiService();
 
@@ -13,6 +12,9 @@ class CharacterProvider extends ChangeNotifier {
 
   final Set<int> _favorites = {};
   Set<int> get favorites => _favorites;
+
+  List<Character> get favoriteCharacters =>
+      _characters.where((c) => _favorites.contains(c.id)).toList();
 
   bool isLoading = false;
   bool hasMore = true;
@@ -33,8 +35,8 @@ class CharacterProvider extends ChangeNotifier {
         _characters.addAll(newCharacters);
         _page++;
       }
-    } catch (_) {
-      hasMore = false;
+    } catch (e) {
+      debugPrint(e.toString());
     }
 
     isLoading = false;
@@ -46,6 +48,5 @@ class CharacterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isFavorite(int id) => favorites.contains(id);
-
+  bool isFavorite(int id) => _favorites.contains(id);
 }
