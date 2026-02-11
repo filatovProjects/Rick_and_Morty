@@ -39,22 +39,18 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<CharacterProvider>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Characters'), centerTitle: true),
-
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: provider.characters.length + (provider.isLoading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index < provider.characters.length) {
-            return CharacterCard(character: provider.characters[index]);
-          }
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        },
-      ),
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: provider.characters.length + (provider.isLoading ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index < provider.characters.length) {
+          return CharacterCard(character: provider.characters[index]);
+        }
+        return const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        );
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rick_and_morty/screens/home_screen.dart';
 
-import '../screens/characters_screen.dart';
 import '../providers/character_provider.dart';
 
 
@@ -18,8 +18,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => CharacterProvider(),
       child: MaterialApp(
-        title: 'Rick and Morty',
-        home: const CharactersScreen(),
+        home: const HomeScreen(),
       ),
     );
   }
