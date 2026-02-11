@@ -4,12 +4,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/character_model.dart';
 import '../services/characters_service.dart';
 
-
 class CharacterProvider extends ChangeNotifier {
   final CharacterApiService _apiService = CharacterApiService();
 
   final List<Character> _characters = [];
   List<Character> get characters => _characters;
+
+  final Box<Character> _charactersBox = Hive.box<Character>('characters');
 
   final Box<int> _favoritesBox = Hive.box<int>('favorites');
   final Set<int> _favorites = {};
@@ -25,6 +26,17 @@ class CharacterProvider extends ChangeNotifier {
   bool hasMore = true;
   int _page = 1;
 
+  Future<void> loadFromCache() async {
+    final cached = _charactersBox.values.toList();
+
+    if (cached.isNotEmpty) {
+      _characters.clear();
+      _characters.addAll(cached);
+      _page = (_characters.length ~/ 20) + 1;
+      notifyListeners();
+    }
+  }
+
   Future<void> loadCharacters() async {
     if (isLoading || !hasMore) return;
 
@@ -38,6 +50,10 @@ class CharacterProvider extends ChangeNotifier {
         hasMore = false;
       } else {
         _characters.addAll(newCharacters);
+
+        await _charactersBox.clear();
+        await _charactersBox.addAll(_characters);
+
         _page++;
       }
     } catch (e) {

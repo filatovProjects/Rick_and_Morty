@@ -18,16 +18,21 @@ class _CharactersScreenState extends State<CharactersScreen> {
   void initState() {
     super.initState();
 
-    final provider = context.read<CharacterProvider>();
-    provider.loadCharacters();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = context.read<CharacterProvider>();
+      provider.loadFromCache();
+      provider.loadCharacters();
+    });
+
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
-        provider.loadCharacters();
+        context.read<CharacterProvider>().loadCharacters();
       }
     });
   }
+
 
   @override
   void dispose() {

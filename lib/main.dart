@@ -11,7 +11,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CharacterAdapter());
   await Hive.openBox<Character>('characters'); // для всех персонажей
-  await Hive.openBox<int>('favorites'); // для хранения ID избранных
+  await Hive.openBox<int>('favorites'); // для избранных
   runApp(const MyApp());
 }
 
