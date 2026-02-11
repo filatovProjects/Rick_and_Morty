@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../models/character_model.dart';
 import '../services/characters_service.dart';
@@ -10,8 +11,12 @@ class CharacterProvider extends ChangeNotifier {
   final List<Character> _characters = [];
   List<Character> get characters => _characters;
 
+  final Box<int> _favoritesBox = Hive.box<int>('favorites');
   final Set<int> _favorites = {};
-  Set<int> get favorites => _favorites;
+
+  CharacterProvider() {
+    _favorites.addAll(_favoritesBox.values);
+  }
 
   List<Character> get favoriteCharacters =>
       _characters.where((c) => _favorites.contains(c.id)).toList();
@@ -44,7 +49,13 @@ class CharacterProvider extends ChangeNotifier {
   }
 
   void toggleFavorite(int id) {
-    _favorites.contains(id) ? _favorites.remove(id) : _favorites.add(id);
+    if (_favorites.contains(id)) {
+      _favorites.remove(id);
+      _favoritesBox.delete(id); // удаляем из Hive
+    } else {
+      _favorites.add(id);
+      _favoritesBox.put(id, id); // сохраняем в Hive
+    }
     notifyListeners();
   }
 
